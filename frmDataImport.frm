@@ -282,13 +282,13 @@ Private Sub UpdateDataStatus()
     For i = 1 To 4
         Select Case i
             Case 1 ' Du no
-                lastImportDate = GetLastImportDate(DATA_TYPE_DU_NO)
+                lastImportDate = modImport.GetLastImportDate(ModuleConfig.DATA_TYPE_DU_NO)
             Case 2 ' Tai san
-                lastImportDate = GetLastImportDate(DATA_TYPE_TAI_SAN)
+                lastImportDate = modImport.GetLastImportDate(ModuleConfig.DATA_TYPE_TAI_SAN)
             Case 3 ' Tra goc
-                lastImportDate = GetLastImportDate(DATA_TYPE_TRA_GOC)
+                lastImportDate = modImport.GetLastImportDate(ModuleConfig.DATA_TYPE_TRA_GOC)
             Case 4 ' Tra lai
-                lastImportDate = GetLastImportDate(DATA_TYPE_TRA_LAI)
+                lastImportDate = modImport.GetLastImportDate(ModuleConfig.DATA_TYPE_TRA_LAI)
         End Select
         
         ' Tinh so ngay ke tu lan import cuoi
@@ -298,20 +298,20 @@ Private Sub UpdateDataStatus()
             ' Xac dinh mau va thong bao theo so ngay
             If daysSinceLastImport <= 3 Then
                 ' Du lieu moi (0-3 ngay)
-                statusColor = COLOR_SUCCESS ' Mau xanh la
+                statusColor = ModuleConfig.COLOR_SUCCESS ' Mau xanh la
                 statusText = "Import gan nhat: " & Format(lastImportDate, "dd/mm/yyyy") & " (Du lieu moi)"
-            ElseIf daysSinceLastImport <= DATA_WARNING_DAYS Then
+            ElseIf daysSinceLastImport <= ModuleConfig.DATA_WARNING_DAYS Then
                 ' Du lieu binh thuong (4-7 ngay)
-                statusColor = COLOR_WARNING ' Mau vang
+                statusColor = ModuleConfig.COLOR_WARNING ' Mau vang
                 statusText = "Import gan nhat: " & Format(lastImportDate, "dd/mm/yyyy") & " (" & daysSinceLastImport & " ngay truoc)"
             Else
                 ' Du lieu cu (> 7 ngay)
-                statusColor = COLOR_DANGER ' Mau do
+                statusColor = ModuleConfig.COLOR_DANGER ' Mau do
                 statusText = "Import gan nhat: " & Format(lastImportDate, "dd/mm/yyyy") & " (" & daysSinceLastImport & " ngay truoc - Du lieu cu)"
             End If
         Else
             ' Chua co du lieu import
-            statusColor = COLOR_DANGER ' Mau do
+            statusColor = ModuleConfig.COLOR_DANGER ' Mau do
             statusText = "Chua co du lieu import"
         End If
         
@@ -414,37 +414,37 @@ Private Sub ValidateFileAndUpdateStatus(ByVal fileIndex As Integer, ByVal dataTy
     
     ' Lay duong dan va ten file
     filePath = filePaths(fileIndex)
-    fileName = GetFileNameFromPath(filePath)
+    fileName = modImport.GetFileNameFromPath(filePath)
     
     ' Kiem tra file co ton tai khong
     If Dir(filePath) = "" Then
-        statusColor = COLOR_DANGER
+        statusColor = ModuleConfig.COLOR_DANGER
         statusText = "Loi: File khong ton tai"
         isValid = False
     Else
         ' Kiem tra tinh hop le cua file
-        isValid = ValidateImportFile(filePath, dataType)
+        isValid = modImport.ValidateImportFile(filePath, dataType)
         
         If isValid Then
             ' Lay ngay tu ten file
-            fileDate = ExtractDateFromFileName(fileName, dataType)
+            fileDate = ModuleConfig.ExtractDateFromFileName(fileName, dataType)
             
             ' Lay ngay import gan nhat
-            lastImportDate = GetLastImportDate(dataType)
+            lastImportDate = modImport.GetLastImportDate(dataType)
             
             ' Kiem tra tinh cap nhat
             If fileDate < lastImportDate Then
                 ' File cu hon du lieu hien tai
-                statusColor = COLOR_WARNING
+                statusColor = ModuleConfig.COLOR_WARNING
                 statusText = "Canh bao: File cu hon du lieu hien tai (" & Format(fileDate, "dd/mm/yyyy") & " < " & Format(lastImportDate, "dd/mm/yyyy") & ")"
             Else
                 ' File moi hon hoac bang du lieu hien tai
-                statusColor = COLOR_SUCCESS
+                statusColor = ModuleConfig.COLOR_SUCCESS
                 statusText = "File hop le - Ngay: " & Format(fileDate, "dd/mm/yyyy")
             End If
         Else
             ' File khong hop le
-            statusColor = COLOR_DANGER
+            statusColor = ModuleConfig.COLOR_DANGER
             statusText = "Loi: Ten file khong dung dinh dang yeu cau"
         End If
     End If
